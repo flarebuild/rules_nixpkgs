@@ -81,7 +81,8 @@ def nixpkgs_foreign_cc_configure(
         fail_not_supported = True,
         quiet = False,
         exec_constraints = None,
-        target_constraints = None):
+        target_constraints = None,
+        register = True):
     if not nix_file and not nix_file_content:
         nix_file_content = """
             with import <nixpkgs> { config = {}; overlays = []; }; buildEnv {
@@ -107,8 +108,9 @@ def nixpkgs_foreign_cc_configure(
         exec_constraints = exec_constraints,
         target_constraints = target_constraints,
     )
-    native.register_toolchains(
-        str(Label("@{}_toolchain//:cmake_nix_toolchain".format(name))),
-        str(Label("@{}_toolchain//:make_nix_toolchain".format(name))),
-        str(Label("@{}_toolchain//:ninja_nix_toolchain".format(name))),
-    )
+    if register:
+        native.register_toolchains(
+            str(Label("@{}_toolchain//:cmake_nix_toolchain".format(name))),
+            str(Label("@{}_toolchain//:make_nix_toolchain".format(name))),
+            str(Label("@{}_toolchain//:ninja_nix_toolchain".format(name))),
+        )
